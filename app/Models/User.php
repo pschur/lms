@@ -26,9 +26,23 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
+        'first_name',
+        'last_name',
+        'username',
         'email',
         'password',
+
+        'role',
+        'active',
+        'code',
+        'gender',
+        'phone',
+        'address',
+        'settings',
+
+        'school_id',
+
+        'last_login_at',
     ];
 
     /**
@@ -50,6 +64,10 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'password' => 'hashed',
+        'address' => 'array',
+        'settings' => 'array',
+        'last_login_at' => 'datetime',
     ];
 
     /**
@@ -60,4 +78,13 @@ class User extends Authenticatable
     protected $appends = [
         'profile_photo_url',
     ];
+
+    protected $with = [
+        'school',
+    ];
+
+    public function school()
+    {
+        return $this->belongsTo(School::class);
+    }
 }
