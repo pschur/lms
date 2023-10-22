@@ -23,7 +23,7 @@ return new class extends Migration
 
             $table->string('role')->default('guest'); // guest, admin, teacher, student, parent
             $table->boolean('active')->default(false);
-            $table->integer('code')->unique();
+            $table->string('code')->unique();
 
             $table->string('gender')->nullable();
             $table->string('phone')->nullable();

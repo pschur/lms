@@ -20,7 +20,7 @@ Route::middleware('guest:sanctum')->group(function(){
 });
 
 Route::middleware('auth:sanctum')->group(function(){
-    Route::post('/logout', [App\Http\Controllers\ApiAuthController::class, 'logout']);
     Route::get('/user', [App\Http\Controllers\ApiAuthController::class, 'user']);
     Route::post('/refresh', [App\Http\Controllers\ApiAuthController::class, 'refresh']);
+    Route::post('/logout', [App\Http\Controllers\ApiAuthController::class, 'logout']);
 });
