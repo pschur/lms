@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Client;
 use App\Models\School;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -11,7 +12,17 @@ use Illuminate\Validation\Rules;
 class ApiAuthController extends Controller
 {
     public function login(Request $request){
+        $request->validate([
+            'username' => ['required', 'string', 'max:255'],
+            'password' => ['required', 'string', 'max:255'],
+
+            'client_id' => ['required', 'string', 'max:255'],
+            'device_name' => ['nullable', 'string', 'max:255'],
+        ]);
+
         $credentials = $request->only(['username', 'password']);
+
+        $token_name = Client::findOrFail($request->client_id)->name;
 
         if(!auth()->once($credentials)){
             return response()->json([
@@ -19,10 +30,14 @@ class ApiAuthController extends Controller
             ], 401);
         }
 
-        $token = auth()->user()->createToken('auth_token')->plainTextToken;
+        if ($request->has('device_name')){
+            $token_name = $request->device_name.': ['.$token_name.']';
+        }
+
+        $token = auth()->user()->createToken($token_name, ['*']);
 
         return response()->json([
-            'access_token' => $token,
+            'access_token' => $token->plainTextToken,
         ]);
     }
 
@@ -34,7 +49,7 @@ class ApiAuthController extends Controller
         ]);
     }
 
-    public function me(Request $request){
+    public function user(Request $request){
         return response()->json($request->user());
     }
 
@@ -53,7 +68,12 @@ class ApiAuthController extends Controller
             'email' => ['required', 'string', 'email', 'max:255', 'unique:'.User::class],
             'username' => ['required', 'string', 'max:255', 'unique:'.User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
+
+            'client_id' => ['required', 'string', 'max:255'],
+            'device_name' => ['nullable', 'string', 'max:255'],
         ]);
+
+        $token_name = Client::findOrFail($request->client_id)->name;
 
         $user = User::create([
             'first_name' => $request->first_name,
@@ -75,10 +95,14 @@ class ApiAuthController extends Controller
             $user->save();
         }
 
-        $token = $user->createToken('auth_token')->plainTextToken;
+        if ($request->has('device_name')){
+            $token_name = $request->device_name.': ['.$token_name.']';
+        }
+
+        $token = $user->createToken($token_name, ['*']);
 
         return response()->json([
-            'access_token' => $token,
+            'access_token' => $token->plainTextToken,
         ]);
     }
 }
