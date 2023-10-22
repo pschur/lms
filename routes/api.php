@@ -15,12 +15,12 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::middleware('guest:sanctum')->group(function(){
-    Route::post('/login', [App\Http\Controllers\ApiAuthController::class, 'login']);
-    Route::post('/register', [App\Http\Controllers\ApiAuthController::class, 'register']);
+    Route::post('/login', [App\Http\Controllers\Api\AuthController::class, 'login']);
+    Route::post('/register', [App\Http\Controllers\Api\AuthController::class, 'register']);
 });
 
 Route::middleware('auth:sanctum')->group(function(){
-    Route::get('/user', [App\Http\Controllers\ApiAuthController::class, 'user']);
-    Route::post('/refresh', [App\Http\Controllers\ApiAuthController::class, 'refresh']);
-    Route::post('/logout', [App\Http\Controllers\ApiAuthController::class, 'logout']);
+    Route::get('/user', [App\Http\Controllers\Api\AuthController::class, 'user']);
+    Route::post('/refresh', [App\Http\Controllers\Api\AuthController::class, 'refresh']);
+    Route::post('/logout', [App\Http\Controllers\Api\AuthController::class, 'logout']);
 });
