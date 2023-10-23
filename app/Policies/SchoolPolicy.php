@@ -12,8 +12,8 @@ class SchoolPolicy
      * Determine whether the user can view any models.
      */
     public function viewAny(User $user): bool
-    {
-        //
+    { 
+        return $user->can('school.viewAny') && $user->tokenCan('school.view');
     }
 
     /**
