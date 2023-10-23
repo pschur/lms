@@ -5,14 +5,17 @@ namespace App\Policies;
 use App\Models\School;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
+use Illuminate\Support\Facades\Gate;
 
 class SchoolPolicy
 {
+    use HasFunctionalMethods;
+
     /**
      * Determine whether the user can view any models.
      */
     public function viewAny(User $user): bool
-    { 
+    {
         return $user->can('school.viewAny') && $user->tokenCan('school.view');
     }
 
@@ -21,7 +24,8 @@ class SchoolPolicy
      */
     public function view(User $user, School $school): bool
     {
-        //
+
+        return $this->default($user, $school, 'school.view');
     }
 
     /**
@@ -29,7 +33,7 @@ class SchoolPolicy
      */
     public function create(User $user): bool
     {
-        //
+        return $user->can('school.create') && $user->tokenCan('school.create');
     }
 
     /**
@@ -37,7 +41,7 @@ class SchoolPolicy
      */
     public function update(User $user, School $school): bool
     {
-        //
+        return $this->default($user, $school, 'school.update');
     }
 
     /**
@@ -45,7 +49,7 @@ class SchoolPolicy
      */
     public function delete(User $user, School $school): bool
     {
-        //
+        return $this->default($user, $school, 'school.delete');
     }
 
     /**
@@ -53,7 +57,7 @@ class SchoolPolicy
      */
     public function restore(User $user, School $school): bool
     {
-        //
+        return $this->default($user, $school, 'school.restore');
     }
 
     /**
@@ -61,6 +65,6 @@ class SchoolPolicy
      */
     public function forceDelete(User $user, School $school): bool
     {
-        //
+        return $this->default($user, $school, 'choolforceDelete');
     }
 }

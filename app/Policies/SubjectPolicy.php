@@ -8,12 +8,13 @@ use Illuminate\Auth\Access\Response;
 
 class SubjectPolicy
 {
+    use HasFunctionalMethods;
     /**
      * Determine whether the user can view any models.
      */
     public function viewAny(User $user): bool
     {
-        //
+        return $user->can('subject.viewAny') && $user->tokenCan('subject.view');
     }
 
     /**
@@ -21,7 +22,7 @@ class SubjectPolicy
      */
     public function view(User $user, Subject $subject): bool
     {
-        //
+        return $this->default($user, $subject, 'subject.view') || $user->subjects()->contains($subject);
     }
 
     /**
@@ -29,7 +30,7 @@ class SubjectPolicy
      */
     public function create(User $user): bool
     {
-        //
+        return $user->can('subject.create') && $user->tokenCan('subject.create');
     }
 
     /**
@@ -37,7 +38,7 @@ class SubjectPolicy
      */
     public function update(User $user, Subject $subject): bool
     {
-        //
+        return $this->default($user, $subject, 'subject.update');
     }
 
     /**
@@ -45,7 +46,7 @@ class SubjectPolicy
      */
     public function delete(User $user, Subject $subject): bool
     {
-        //
+        return $this->default($user, $subject, 'subject.delete');
     }
 
     /**
@@ -53,7 +54,7 @@ class SubjectPolicy
      */
     public function restore(User $user, Subject $subject): bool
     {
-        //
+        return $this->default($user, $subject, 'subject.restore');
     }
 
     /**
@@ -61,6 +62,6 @@ class SubjectPolicy
      */
     public function forceDelete(User $user, Subject $subject): bool
     {
-        //
+        return $this->default($user, $subject, 'subject.forceDelete');
     }
 }

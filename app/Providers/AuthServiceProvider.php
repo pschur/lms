@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
-// use Illuminate\Support\Facades\Gate;
+use App\Models\{School, SchoolClass, Subject, User};
+use App\Policies\{SchoolClassPolicy, SchoolPolicy, SubjectPolicy};
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
 class AuthServiceProvider extends ServiceProvider
@@ -13,7 +15,9 @@ class AuthServiceProvider extends ServiceProvider
      * @var array<class-string, class-string>
      */
     protected $policies = [
-        //
+        School::class => SchoolPolicy::class,
+        SchoolClass::class => SchoolClassPolicy::class,
+        Subject::class => SubjectPolicy::class,
     ];
 
     /**
@@ -21,6 +25,12 @@ class AuthServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        Gate::before(function(User $user){
+            return $user->hasRole('root') ? true : null;
+        });
+
+        Gate::define('root', function(User $user){
+            return $user->hasRole('root');
+        });
     }
 }
